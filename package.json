@@ -1,0 +1,137 @@
+{
+  "name": "payload-google-reviews",
+  "version": "0.4.0",
+  "description": "A Payload CMS 3.x plugin that syncs Google reviews into a reviews collection, from the Places API or a scraper.",
+  "license": "MIT",
+  "author": "jon8800",
+  "homepage": "https://github.com/jon8800/payload-google-reviews#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jon8800/payload-google-reviews.git"
+  },
+  "bugs": {
+    "url": "https://github.com/jon8800/payload-google-reviews/issues"
+  },
+  "keywords": [
+    "payload",
+    "payloadcms",
+    "plugin",
+    "google",
+    "reviews",
+    "google-reviews",
+    "places-api",
+    "testimonials"
+  ],
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./src/index.ts",
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    },
+    "./client": {
+      "import": "./src/components/SyncReviewsButton.tsx",
+      "types": "./src/components/SyncReviewsButton.tsx",
+      "default": "./src/components/SyncReviewsButton.tsx"
+    },
+    "./types": {
+      "import": "./src/types.ts",
+      "types": "./src/types.ts",
+      "default": "./src/types.ts"
+    },
+    "./blocks": {
+      "import": "./src/blocks/googleReviewsBlock.ts",
+      "types": "./src/blocks/googleReviewsBlock.ts",
+      "default": "./src/blocks/googleReviewsBlock.ts"
+    }
+  },
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "files": [
+    "dist",
+    "CHANGELOG.md"
+  ],
+  "sideEffects": [
+    "*.scss",
+    "*.css"
+  ],
+  "scripts": {
+    "build": "pnpm copyfiles && pnpm build:types && pnpm build:swc",
+    "build:swc": "swc ./src -d ./dist --config-file .swcrc --strip-leading-paths --ignore \"**/*.d.ts\"",
+    "build:types": "tsc -p tsconfig.build.json",
+    "clean": "rimraf {dist,*.tsbuildinfo}",
+    "copyfiles": "copyfiles -u 1 \"src/**/*.{html,css,scss,ttf,woff,woff2,eot,svg,jpg,png,json}\" dist/",
+    "prepublishOnly": "pnpm clean && pnpm build",
+    "test": "vitest run",
+    "typecheck": "tsc -p tsconfig.build.json --noEmit --emitDeclarationOnly false"
+  },
+  "devDependencies": {
+    "@payloadcms/ui": "3.93.0",
+    "@swc/cli": "0.6.0",
+    "@swc/core": "1.15.32",
+    "@types/node": "^26.6.6",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "copyfiles": "2.4.1",
+    "lucide-react": "^1.70.0",
+    "payload": "3.93.0",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
+    "rimraf": "3.0.2",
+    "typescript": "7.0.2",
+    "vite": "8.3.6",
+    "vitest": "^5.1.0"
+  },
+  "peerDependencies": {
+    "@payloadcms/ui": "^3.0.0",
+    "google-maps-review-scraper": "^3.1.0",
+    "lucide-react": ">=0.400.0",
+    "payload": "^3.0.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "peerDependenciesMeta": {
+    "google-maps-review-scraper": {
+      "optional": true
+    }
+  },
+  "engines": {
+    "node": "^18.20.2 || >=20.9.0",
+    "pnpm": "^9 || ^10"
+  },
+  "publishConfig": {
+    "exports": {
+      ".": {
+        "import": "./dist/index.js",
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "./client": {
+        "import": "./dist/components/SyncReviewsButton.js",
+        "types": "./dist/components/SyncReviewsButton.d.ts",
+        "default": "./dist/components/SyncReviewsButton.js"
+      },
+      "./types": {
+        "import": "./dist/types.js",
+        "types": "./dist/types.d.ts",
+        "default": "./dist/types.js"
+      },
+      "./blocks": {
+        "import": "./dist/blocks/googleReviewsBlock.js",
+        "types": "./dist/blocks/googleReviewsBlock.d.ts",
+        "default": "./dist/blocks/googleReviewsBlock.js"
+      }
+    },
+    "main": "./dist/index.js",
+    "types": "./dist/index.d.ts"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "@swc/core",
+      "esbuild",
+      "sharp",
+      "unrs-resolver"
+    ]
+  },
+  "registry": "https://registry.npmjs.org/"
+}

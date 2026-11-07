@@ -1,0 +1,19 @@
+# dependencies
+/node_modules
+
+# build output and packed tarballs
+/dist
+/release
+/dist-packages
+*.tsbuildinfo
+
+# testing
+/coverage
+
+# local env files
+.env*
+
+# misc
+.DS_Store
+*.pem
+npm-debug.log*
