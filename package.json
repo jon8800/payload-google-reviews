@@ -1,7 +1,7 @@
 {
   "name": "payload-google-reviews",
-  "version": "0.4.0",
-  "description": "A Payload CMS 3.x plugin that syncs Google reviews into a reviews collection, from the Places API or a scraper.",
+  "version": "0.5.0-next.0",
+  "description": "A Payload CMS 4 plugin that syncs Google reviews into a reviews collection, from the Places API or a scraper.",
   "license": "MIT",
   "author": "jon8800",
   "homepage": "https://github.com/jon8800/payload-google-reviews#readme",
@@ -52,7 +52,6 @@
     "CHANGELOG.md"
   ],
   "sideEffects": [
-    "*.scss",
     "*.css"
   ],
   "scripts": {
@@ -60,21 +59,22 @@
     "build:swc": "swc ./src -d ./dist --config-file .swcrc --strip-leading-paths --ignore \"**/*.d.ts\"",
     "build:types": "tsc -p tsconfig.build.json",
     "clean": "rimraf {dist,*.tsbuildinfo}",
-    "copyfiles": "copyfiles -u 1 \"src/**/*.{html,css,scss,ttf,woff,woff2,eot,svg,jpg,png,json}\" dist/",
+    "copyfiles": "copyfiles -u 1 \"src/**/*.{html,css,ttf,woff,woff2,eot,svg,jpg,png,json}\" dist/",
     "prepublishOnly": "pnpm clean && pnpm build",
     "test": "vitest run",
     "typecheck": "tsc -p tsconfig.build.json --noEmit --emitDeclarationOnly false"
   },
   "devDependencies": {
-    "@payloadcms/ui": "3.93.0",
+    "@payloadcms/db-sqlite": "4.0.0-beta.8",
+    "@payloadcms/ui": "4.0.0-beta.8",
     "@swc/cli": "0.6.0",
     "@swc/core": "1.15.32",
     "@types/node": "^26.6.6",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
     "copyfiles": "2.4.1",
-    "lucide-react": "^1.70.0",
-    "payload": "3.93.0",
+    "graphql": "^16.15.0",
+    "payload": "4.0.0-beta.8",
     "react": "19.3.1",
     "react-dom": "19.3.1",
     "rimraf": "3.0.2",
@@ -83,12 +83,11 @@
     "vitest": "^5.1.0"
   },
   "peerDependencies": {
-    "@payloadcms/ui": "^3.0.0",
+    "@payloadcms/ui": "^4.0.0-beta.8",
     "google-maps-review-scraper": "^3.1.0",
-    "lucide-react": ">=0.400.0",
-    "payload": "^3.0.0",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "payload": "^4.0.0-beta.8",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1"
   },
   "peerDependenciesMeta": {
     "google-maps-review-scraper": {
@@ -96,7 +95,7 @@
     }
   },
   "engines": {
-    "node": "^18.20.2 || >=20.9.0",
+    "node": ">=24.22.1",
     "pnpm": "^9 || ^10"
   },
   "publishConfig": {

@@ -21,6 +21,11 @@ export function createReviewsCollection(
       ...options?.access,
     },
     hooks: options?.hooks,
+    // Payload 4 turns versions and authorship on by default. The sync job rewrites every review on
+    // each run, so versions would only pile up, and authorship would add columns the job never fills.
+    // Off keeps the database schema the same as on Payload 3.
+    versions: false,
+    authorship: false,
     fields: [
       {
         name: 'googleReviewId',

@@ -1,12 +1,11 @@
 'use client'
 
 import { useState } from 'react'
-import { toast, useConfig } from '@payloadcms/ui'
-import { RefreshCw } from 'lucide-react'
+import { Button, RefreshIcon, toast, useConfig } from '@payloadcms/ui'
 import type { SyncReviewsButtonProps } from '../globals/reviewSettings.js'
 import { SYNC_ENDPOINT_PATH } from '../options.js'
 
-import './syncReviewsButton.scss'
+import './syncReviewsButton.css'
 
 export function SyncReviewsButton({ scheduleLabel }: SyncReviewsButtonProps) {
   const { config } = useConfig()
@@ -35,15 +34,18 @@ export function SyncReviewsButton({ scheduleLabel }: SyncReviewsButtonProps) {
 
   return (
     <div className="sync-reviews">
-      <button
-        type="button"
-        className="sync-reviews__button"
-        onClick={handleSync}
+      <Button
+        buttonStyle="secondary"
         disabled={syncing}
+        icon={<RefreshIcon />}
+        iconPosition="left"
+        margin={false}
+        onClick={handleSync}
+        size="medium"
+        type="button"
       >
-        <RefreshCw className={`sync-reviews__icon ${syncing ? 'sync-reviews__icon--spinning' : ''}`} size={16} />
         {syncing ? 'Syncing...' : 'Sync Reviews Now'}
-      </button>
+      </Button>
       <p className="sync-reviews__description">
         Manually trigger a Google Reviews sync. {scheduleText}
       </p>

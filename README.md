@@ -1,6 +1,8 @@
 # payload-google-reviews
 
-A Payload CMS 3 plugin that copies a business's Google reviews into your site.
+A Payload CMS 4 plugin that copies a business's Google reviews into your site.
+
+This is the Payload 4 line (`0.5.x`, npm dist-tag `next`): `pnpm add payload-google-reviews@next`. For Payload 3, use `0.4.x` (`latest`).
 
 It adds:
 
@@ -12,9 +14,9 @@ It adds:
 
 ## Requirements
 
-- Payload `^3.0.0`, `@payloadcms/ui` `^3.0.0`
-- React and React DOM `^19.0.0`
-- `lucide-react` `>=0.400.0`
+- Payload `^4.0.0-beta.8`, `@payloadcms/ui` `^4.0.0-beta.8`
+- React and React DOM `^19.3.1`
+- Node `>=24.22.1` (Payload 4's minimum)
 - An upload collection for review photos (default `media`). Only the scraper fetches photos.
 
 ## Install
@@ -109,6 +111,7 @@ The other settings live in the Review Settings global, in the admin:
 The `schedule` option sets the job's cron. The sync button text comes from the same value, for example "Reviews also sync automatically every Sunday at 17:00 (server time)".
 
 - The cron has 5 fields (`minute hour day month weekday`), or 6 with seconds first.
+- A step needs `*` or a range before the `/` (Payload 4 rule): `*/10` and `5-59/15` work, `/10` and `5/15` do not. The plugin throws at startup with the fix in the message.
 - It uses the server's time zone. `'0 17 * * 0'` is Sunday 17:00 UTC (Monday 03:00 AEST) on a UTC server.
 
 **The schedule fires only when the site runs Payload jobs.** Payload does not do it on its own. Pick one:

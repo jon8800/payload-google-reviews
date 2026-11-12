@@ -33,6 +33,15 @@ function syncButton(settings: GlobalConfig) {
 }
 
 describe('resolveOptions', () => {
+  it('rejects cron steps without a range, which Payload 4 refuses', () => {
+    expect(() => resolveOptions({ schedule: '/10 * * * *' })).toThrow('use "*/10"')
+    expect(() => resolveOptions({ schedule: '5/15 * * * *' })).toThrow('use "5-59/15"')
+    expect(() => resolveOptions({ schedule: '0 2/6 * * *' })).toThrow('use "2-23/6"')
+    expect(() => resolveOptions({ schedule: '*/10 * * * *' })).not.toThrow()
+    expect(() => resolveOptions({ schedule: '5-59/15 * * * *' })).not.toThrow()
+    expect(() => resolveOptions({ schedule: false })).not.toThrow()
+  })
+
   it('fills in every default', () => {
     expect(resolveOptions()).toEqual({
       enabled: true,

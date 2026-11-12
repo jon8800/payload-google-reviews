@@ -1,55 +1,11 @@
-.sync-reviews {
-  margin-bottom: 1.5rem;
-
-  &__button {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.625rem 1.25rem;
-    font-size: 0.8125rem;
-    font-weight: 500;
-    color: var(--theme-text);
-    background: var(--theme-elevation-100);
-    border: 1px solid var(--theme-elevation-200);
-    border-radius: 0.375rem;
-    cursor: pointer;
-    transition: background 150ms, border-color 150ms;
-
-    &:hover:not(:disabled) {
-      background: var(--theme-elevation-150);
-      border-color: var(--theme-elevation-300);
-    }
-
-    &:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-    }
+/* Plain CSS on Payload 4's design tokens. The button itself is Payload's Button. */
+@layer payload-default {
+  .sync-reviews {
+    margin-bottom: var(--spacing-field);
   }
 
-  &__icon {
-    flex-shrink: 0;
-
-    &--spinning {
-      animation: sync-spin 1s linear infinite;
-
-      @media (prefers-reduced-motion: reduce) {
-        animation: none;
-      }
-    }
-  }
-
-  &__description {
-    margin-top: 0.5rem;
-    font-size: 0.75rem;
-    color: var(--theme-elevation-500);
-  }
-}
-
-@keyframes sync-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
+  .sync-reviews__description {
+    margin: var(--spacer-2) 0 0;
+    color: var(--field-color-description);
   }
 }

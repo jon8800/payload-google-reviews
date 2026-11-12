@@ -2,6 +2,34 @@
 
 All notable changes to `payload-google-reviews` (called `@sea-la-vie/payload-google-reviews` before 0.4.0). The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). The package uses [semantic versioning](https://semver.org/). Before 1.0, a minor version can break the API.
 
+## [0.5.0-next.0] - 2026-11-12
+
+The first release for Payload 4. It is published under the npm dist-tag `next`. The Payload 3 line stays on `0.4.x` (`latest`).
+
+### Changed
+
+- **Breaking:** needs Payload and `@payloadcms/ui` `^4.0.0-beta.8`, React `^19.3.1` and Node `>=24.22.1`.
+- **Breaking:** the sync button uses Payload 4's own `Button` and `RefreshIcon`. The `lucide-react` peer dependency is gone.
+- The button's style is plain CSS on Payload 4's design tokens (`syncReviewsButton.css`). The package ships no `.scss`, so a site needs no `sass`.
+- The `reviews` collection and the `review-settings` global set `versions: false` and `authorship: false`. Payload 4 turns both on by default. Off keeps the database schema the same as on Payload 3.
+- The sync endpoint queues and runs the job with `overrideAccess: true`. Payload 4 enforces `jobs.access` by default; the endpoint keeps its own rule, as on Payload 3: any signed-in user can sync.
+- A `schedule` with a step that has no range before `/` (`/10`, `5/15`) now throws at startup with the fix in the message. Payload 4 rejects these crons.
+
+### Migration
+
+1. Upgrade the site to Payload 4 first (see Payload's 3 to 4 migration guide).
+2. Run `pnpm add payload-google-reviews@next`. Remove `lucide-react` if nothing else in the site uses it.
+3. Run `pnpm payload generate:importmap` and `pnpm payload generate:types`.
+4. If you set `schedule`, check its steps (see above).
+
+On Postgres, Payload 4's own jobs changes (`processingUntil`, `concurrencyKey`, `payload-jobs-stats`) need a migration in production. This plugin adds no schema changes of its own.
+
+### Development
+
+- Added a SQLite integration test on Payload 4: the sync job creates and then updates reviews from a mocked Places API, the endpoint works with locked-down `jobs.access`, and it answers 500 with the job's error.
+- Added `.github/workflows/publish-next.yml`: a `v*-next.*` tag publishes to the `next` dist-tag. `publish.yml` skips those tags. `scripts/publish.mjs` takes `--dist-tag` and fails when the version would go to a different dist-tag.
+- `pnpm-workspace.yaml` pins Node 24.22.3 for pnpm scripts.
+
 ## [0.4.0] - 2026-11-08
 
 The first release on npm.

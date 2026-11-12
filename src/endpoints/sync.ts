@@ -36,8 +36,15 @@ export function createSyncEndpoint(resolved: ResolvedOptions): Endpoint {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any -- the task slug is not in the site's generated job types here
         const p = req.payload as any
 
-        const job = await p.jobs.queue({ task: SYNC_TASK_SLUG, queue: resolved.queue, input: {} })
-        const result = await p.jobs.runByID({ id: job.id })
+        // This endpoint already checked the user. Payload 4 would also run the site's jobs.access
+        // functions here; overrideAccess keeps the Payload 3 rule: any signed-in user can sync.
+        const job = await p.jobs.queue({
+          task: SYNC_TASK_SLUG,
+          queue: resolved.queue,
+          input: {},
+          overrideAccess: true,
+        })
+        const result = await p.jobs.runByID({ id: job.id, overrideAccess: true })
         const status: string | undefined = result?.jobStatus?.[String(job.id)]?.status
 
         // No status: another job runner took the job first. It still runs.

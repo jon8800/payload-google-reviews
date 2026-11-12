@@ -42,6 +42,9 @@ export function createReviewSettingsGlobal(
       ...options?.access,
     },
     hooks: options?.hooks,
+    // Off, as on Payload 3. See the reviews collection.
+    versions: false,
+    authorship: false,
     fields: [
       {
         type: 'tabs',
