@@ -1,0 +1,62 @@
+name: Publish next to npm
+
+# Prereleases for Payload 4 (branch release/payload-v4-next) go to the npm `next` dist-tag.
+# A tag such as v0.5.0-next.0 starts this workflow. publish.yml skips these tags, so `latest` stays
+# on the Payload 3 release.
+on:
+  push:
+    tags:
+      - 'v*-next.*'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: publish
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      # Payload 4 needs Node >=24.22.1. pnpm-workspace.yaml pins the same version for pnpm scripts.
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24.22.3'
+          cache: 'pnpm'
+
+      - name: Check that the tag matches package.json
+        run: |
+          VERSION="v$(node -p "require('./package.json').version")"
+          if [ "$VERSION" != "$GITHUB_REF_NAME" ]; then
+            echo "Tag $GITHUB_REF_NAME does not match package.json version $VERSION"
+            exit 1
+          fi
+
+      - run: pnpm install --frozen-lockfile
+
+      - run: pnpm typecheck
+
+      - run: pnpm test
+
+      - run: pnpm build
+
+      # `pnpm pack` applies publishConfig, so the packed package.json points at dist/.
+      - name: Pack
+        run: pnpm pack --pack-destination release
+
+      # --dist-tag next fails when the version is not a prerelease, so this run cannot move `latest`.
+      - name: Dry run
+        run: node scripts/publish.mjs --dry-run --dist-tag next --expect-version "${GITHUB_REF_NAME#v}" release
+
+      # The same raw authenticated PUT as publish.yml (see scripts/publish.mjs).
+      - name: Publish
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: node scripts/publish.mjs --dist-tag next --expect-version "${GITHUB_REF_NAME#v}" release

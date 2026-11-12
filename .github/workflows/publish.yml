@@ -1,9 +1,12 @@
 name: Publish to npm
 
+# Releases for Payload 3 (main) go to the npm `latest` dist-tag.
+# Prerelease tags (v0.5.0-next.0) are for publish-next.yml, so this workflow skips them.
 on:
   push:
     tags:
       - 'v*'
+      - '!v*-next.*'
   workflow_dispatch:
 
 permissions:
@@ -54,7 +57,7 @@ jobs:
       - name: Dry run
         env:
           TAG: ${{ github.ref_type == 'tag' && github.ref_name || '' }}
-        run: node scripts/publish.mjs --dry-run ${TAG:+--expect-version "${TAG#v}"} release
+        run: node scripts/publish.mjs --dry-run --dist-tag latest ${TAG:+--expect-version "${TAG#v}"} release
 
       # Publishes with a raw authenticated PUT (see scripts/publish.mjs). `npm publish` fails on
       # this account: its 2FA is security-key-only, which collides with the CLI's OTP flow.
@@ -63,4 +66,4 @@ jobs:
         env:
           TAG: ${{ github.ref_type == 'tag' && github.ref_name || '' }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: node scripts/publish.mjs ${TAG:+--expect-version "${TAG#v}"} release
+        run: node scripts/publish.mjs --dist-tag latest ${TAG:+--expect-version "${TAG#v}"} release

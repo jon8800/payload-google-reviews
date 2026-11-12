@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // Publishes packed tarballs to npm with a raw authenticated PUT.
 //
-//   node scripts/publish.mjs [--dry-run] [--expect-version <x.y.z>] <tarball.tgz | folder>...
+//   node scripts/publish.mjs [--dry-run] [--expect-version <x.y.z>] [--dist-tag <latest|next>] <tarball.tgz | folder>...
 //
 // Why not `npm publish` / `pnpm publish`: on this npm account they fail with 403. The account uses
 // security-key-only 2FA, and that collides with the CLI's OTP flow. The registry accepts the same
@@ -14,6 +14,8 @@
 // - A version that already exists on npm is skipped, so a re-run after a partial failure is safe.
 // - `--dry-run` builds the full request body and prints it in summary. It sends nothing.
 // - `--expect-version` fails when a tarball has a different version (CI passes the git tag).
+// - `--dist-tag` fails when a tarball would get a different dist-tag. A prerelease (x.y.z-next.N)
+//   always goes to `next`, a release to `latest`. Each workflow passes the one it publishes to.
 // - The token comes from NPM_TOKEN or from `_authToken` in ~/.npmrc. It is never printed.
 
 import { createHash } from 'node:crypto'
@@ -34,10 +36,11 @@ function fail(message) {
 
 const { values, positionals: inputs } = parseArgs({
   allowPositionals: true,
-  options: { 'dry-run': { type: 'boolean' }, 'expect-version': { type: 'string' } },
+  options: { 'dry-run': { type: 'boolean' }, 'expect-version': { type: 'string' }, 'dist-tag': { type: 'string' } },
 })
 const dryRun = Boolean(values['dry-run'])
 const expectVersion = values['expect-version']
+const expectDistTag = values['dist-tag']
 
 const tarballs = inputs.flatMap((input) => {
   if (!fs.existsSync(input)) fail(`not found: ${input}`)
@@ -111,6 +114,9 @@ function buildRequest(file) {
   }
   // A prerelease (1.0.0-beta.1) must not become the version that `npm install <name>` picks.
   const distTag = version.includes('-') ? 'next' : 'latest'
+  if (expectDistTag && distTag !== expectDistTag) {
+    fail(`${name}@${version} would publish to the ${distTag} dist-tag, but this run publishes to ${expectDistTag}`)
+  }
 
   const body = {
     _id: name,
